@@ -1,0 +1,12 @@
+The output of the program could be something like:
+
+ XOOXOOXXXXXXXXXXXX
+ XXXXXXXXXXXXXXXXXX
+ OOOOOOOXXXXXOOOOOO
+ XXXXXOOOXXXXOOOXXX
+ etc...
+
+It would be a good idea to make a function for printing an array of boolean
+characters.  The function's arguments could include characters to be used to 
+represent true and false.
+
