@@ -1,0 +1,33 @@
+/* Default Styles */
+* {
+    margin: 0px;
+    padding: 0px;
+    background-color: black;
+}
+
+/* Board Styles */
+#board {
+    width: 500px;
+    height: 500px;
+    margin: auto;
+    background-color: rgb(15, 20, 15);
+}
+
+/* Cell Styles */
+.cellon {
+    background-color: green;
+    height: 23px;
+    margin: 1px;
+    width: 23px;
+
+    float: left;
+}
+
+.celloff {
+    background-color: black;
+    height: 23px;
+    margin: 1px;
+    width: 23px;
+
+    float: left;
+}
