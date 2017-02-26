@@ -5,24 +5,29 @@
 //                relative to the top edge of the container
 class ConwayCell
 {
-    constructor(x, y, width)
+    constructor(x, y, width, row, col)
     {
         this.x_position = x;
         this.y_position = y;
         this.width = width;
         this.state = 0;
+	this.row = row;
+	this.col = col;
     }
 
     invert()
     {
-        this.state = 1 % this.state;
+        if (this.state == 0)
+            this.state = 1;
+	else
+            this.state = 0;
     }
 
     render(context)
     {
         if (this.state == 0)
         {
-            context.fillStyle = 'green';
+            context.fillStyle = 'black';
             context.fillRect(this.x_position, 
                              this.y_position,
                              this.width,
@@ -30,7 +35,7 @@ class ConwayCell
         }
         else
         {
-            context.fillStyle = 'red';
+            context.fillStyle = 'rgb(80, 80, 80)';
             context.fillRect(this.x_position, 
                              this.y_position,
                              this.width,
@@ -59,12 +64,6 @@ class ConwayBoard
 
         // Populate Cell Array with N Conway Cells 
         // (where N = widthInCells * heightInCells)
-	//
-	// Indices are mapped according to the following structure:
-	// 0 4 8
-	// 1 5 9
-	// 2 6 10
-	// 3 7 11
         for (var row = 1; row <= heightInCells; row++)
         {
             // Vertical coordinate of TOP-LEFT corners of cells
@@ -78,7 +77,7 @@ class ConwayBoard
                 var x = (col - 1) * cellSize + col * this.margin;
 
                 // Add the Conway Cell to the array
-                this.cellArray.push(new ConwayCell(x, y, cellSize));
+                this.cellArray.push(new ConwayCell(x, y, cellSize, row, col));
             }
         }
 
@@ -110,27 +109,51 @@ class ConwayBoard
     invertCell(row, col)
     {
         var index = (row - 1) * this.width + col - 1;
-	console.log(index);
 	this.cellArray[index].invert();
+    }
+
+    // Method to simulate Conway's Game of Life
+    simulate()
+    {
+        var step = 1, maxStep = 1;
+	while (step <= maxStep)
+	{
+            var newCellArray = [];
+	    for (var i = 0; i < this.cellArray.length; i++)
+	    {
+                if (this.cellArray[i].state == 1)
+                {
+                    newCellArray.push(0);
+	            newCellArray.push(1);
+		    i++;
+	        }
+		else
+	            newCellArray.push(0);
+	    }
+	    
+            for (var i = 0; i < this.cellArray.length; i++)
+            {
+	        this.cellArray[i].state = newCellArray[i];
+            }
+	    this.render();
+	    step++;
+	}
     }
 }
 
 // Function to handle click event
 function processClick(clickEvent, board)
 {
-    console.log(board);
-    console.log(clickEvent);
+    // Get coordinates of the container
+    var rect = board.container.getBoundingClientRect();
+  
     // Get the coordinates of click relative to top left corner of the container
-    var click_x_coord = clickEvent.pageX - board.container.offsetLeft,
-        click_y_coord = clickEvent.pageY - board.container.offsetTop;
+    var click_x_coord = clickEvent.pageX - rect.left,
+        click_y_coord = clickEvent.pageY - rect.top;
 
     // Convert coordinates of click to row and column indices of the Cell Array
     var col = Math.ceil(click_x_coord / (board.cellSize + board.margin)),
         row = Math.ceil(click_y_coord / (board.cellSize + board.margin));
-
-    // Log the coordinates of click
-    console.log("Row: " + row);
-    console.log("Col: " + col);
 
     // Update the board
     board.invertCell(row, col);

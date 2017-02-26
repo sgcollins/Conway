@@ -10,9 +10,20 @@
 	<canvas id='container'>
 	    Browser does not support the 'canvas' element.
 	</canvas>
+	<br />
+	<button type="button" onclick="runSimulation()">Run</button>
 	<script>
-            var board = new ConwayBoard(10, 40, 40, 'container');
+            var width = 40,
+	        height = 40,
+		cellSize = 8;
+            var board = new ConwayBoard(cellSize, width, height, 'container');
 	    board.render();
+
+	    function runSimulation()
+            {
+	        console.log("Run button clicked");
+                board.simulate();
+	    }
         </script>
     </body>
 </html>
