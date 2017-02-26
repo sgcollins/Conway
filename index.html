@@ -3,27 +3,29 @@
     <head>
         <title>Conway's Game of Life</title>
 	<link href="style.css" rel="stylesheet" type="text/css" />
-	<script src="conway_classes.js" type="text/javascript"></script>
+	<script src="conway.js" type="text/javascript"></script>
     </head>
 
     <body>
+	<p>This is before the canvas</p>
 	<canvas id='container'>
 	    Browser does not support the 'canvas' element.
 	</canvas>
-	<br />
-	<button type="button" onclick="runSimulation()">Run</button>
+	<p>This is after the canvas</p>
 	<script>
+            /*
+            var canvas = document.getElementById('container');
+	    var context = canvas.getContext('2d');
+	    var cell = new ConwayCell(10, 10, 10);
+	    console.log(cell);
+	    cell.render(context);
+	    */
             var width = 40,
 	        height = 40,
 		cellSize = 8;
-            var board = new ConwayBoard(cellSize, width, height, 'container');
+            var board = new ConwayBoard(height, width, cellSize, 'container');
+	    console.log(board);
 	    board.render();
-
-	    function runSimulation()
-            {
-	        console.log("Run button clicked");
-                board.simulate();
-	    }
         </script>
     </body>
 </html>
