@@ -13,6 +13,11 @@ class ConwayCell
         this.state = 0;
     }
 
+    invert()
+    {
+        this.state = 1 % this.state;
+    }
+
     render(context)
     {
         if (this.state == 0)
@@ -45,12 +50,21 @@ class ConwayBoard
     constructor(cellSize, widthInCells, heightInCells, canvasID)
     {
         this.margin = 1; // Number of pixels between cells
+	this.cellSize = cellSize; // Width and Height of Conway Cells
+	this.width = widthInCells;  // Width in cells
+	this.height = heightInCells; // Height in cells
 
         // Array of Conway Cells
         this.cellArray = [];
 
         // Populate Cell Array with N Conway Cells 
         // (where N = widthInCells * heightInCells)
+	//
+	// Indices are mapped according to the following structure:
+	// 0 4 8
+	// 1 5 9
+	// 2 6 10
+	// 3 7 11
         for (var row = 1; row <= heightInCells; row++)
         {
             // Vertical coordinate of TOP-LEFT corners of cells
@@ -72,12 +86,16 @@ class ConwayBoard
         this.container = document.getElementById(canvasID);
         this.context = this.container.getContext('2d');
 
-        // Set the size of the canvas element
+        // Set the size of the container
         this.container.width = widthInCells * (cellSize + this.margin) + this.margin;
         this.container.height = heightInCells * (cellSize + this.margin) + this.margin;
+
+	// Add event listener for clicks
+	board = this;
+	this.container.addEventListener('click', function() {processClick(event, board)});
     }
 
-    // Function to render the Conway Board on the page
+    // Method to render the Conway Board on the page
     render()
     {
         for (var i = 0; i < this.cellArray.length; i++)
@@ -87,4 +105,36 @@ class ConwayBoard
             this.cellArray[i].render(this.context);
         }
     }
+
+    // Method to invert the state of a Conway Cell in the board's Cell Array
+    invertCell(row, col)
+    {
+        var index = (row - 1) * this.width + col - 1;
+	console.log(index);
+	this.cellArray[index].invert();
+    }
+}
+
+// Function to handle click event
+function processClick(clickEvent, board)
+{
+    console.log(board);
+    console.log(clickEvent);
+    // Get the coordinates of click relative to top left corner of the container
+    var click_x_coord = clickEvent.pageX - board.container.offsetLeft,
+        click_y_coord = clickEvent.pageY - board.container.offsetTop;
+
+    // Convert coordinates of click to row and column indices of the Cell Array
+    var col = Math.ceil(click_x_coord / (board.cellSize + board.margin)),
+        row = Math.ceil(click_y_coord / (board.cellSize + board.margin));
+
+    // Log the coordinates of click
+    console.log("Row: " + row);
+    console.log("Col: " + col);
+
+    // Update the board
+    board.invertCell(row, col);
+
+    // Render the board again
+    board.render();
 }
