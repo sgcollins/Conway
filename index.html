@@ -7,25 +7,22 @@
     </head>
 
     <body>
-	<p>This is before the canvas</p>
 	<canvas id='container'>
 	    Browser does not support the 'canvas' element.
 	</canvas>
-	<p>This is after the canvas</p>
+	<br />
+	<button onclick = simulate()>Run</button>
 	<script>
-            /*
-            var canvas = document.getElementById('container');
-	    var context = canvas.getContext('2d');
-	    var cell = new ConwayCell(10, 10, 10);
-	    console.log(cell);
-	    cell.render(context);
-	    */
-            var width = 40,
-	        height = 40,
-		cellSize = 8;
+            var width = 50,
+	        height = 50,
+		cellSize = 10;
             var board = new ConwayBoard(height, width, cellSize, 'container');
 	    console.log(board);
 	    board.render();
+
+	    function simulate () {
+                board.simulate();
+	    }
         </script>
     </body>
 </html>
