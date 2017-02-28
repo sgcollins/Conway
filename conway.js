@@ -133,7 +133,7 @@ ConwayBoard.prototype.initializeContainer = function (canvasID) {
     
     // Add event listener and a function to handle clicks
     var board = this;
-    this.container.addEventListener('click', function() {processClick(event, board)});
+    this.container.addEventListener('click', function(event) {processClick(event, board)});
     function processClick(click, board) {
         var rect = board.container.getBoundingClientRect();
 	var col = Math.floor((click.pageX - rect.left) / (board.cellDim	+ board.margin)),

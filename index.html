@@ -27,11 +27,11 @@
             
             var timeout;
             function run() {
-                timeout = setInterval(simulate, 60);
+                timeout = window.setInterval(simulate, 60);
 	    }
 
             function stop() {
-	        clearInterval(timeout);
+	        window.clearInterval(timeout);
 	    }
         </script>
     </body>
