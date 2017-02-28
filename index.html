@@ -11,17 +11,27 @@
 	    Browser does not support the 'canvas' element.
 	</canvas>
 	<br />
-	<button onclick = simulate()>Run</button>
+	<button onclick = run()>Run</button>
+	<button onclick = stop()>Stop</button>
 	<script>
-            var width = 50,
-	        height = 50,
-		cellSize = 10;
+            var width = 200,
+	        height = 100,
+		cellSize = 5;
             var board = new ConwayBoard(height, width, cellSize, 'container');
 	    console.log(board);
 	    board.render();
 
 	    function simulate () {
                 board.simulate();
+	    }
+            
+            var timeout;
+            function run() {
+                timeout = setInterval(simulate, 60);
+	    }
+
+            function stop() {
+	        clearInterval(timeout);
 	    }
         </script>
     </body>
