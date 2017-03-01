@@ -135,11 +135,43 @@ ConwayBoard.prototype.initializeContainer = function (canvasID) {
     var board = this;
     this.container.addEventListener('click', function(event) {processClick(event, board)});
     function processClick(click, board) {
-        var rect = board.container.getBoundingClientRect();
-	var col = Math.floor((click.pageX - rect.left) / (board.cellDim	+ board.margin)),
-	    row = Math.floor((click.pageY - rect.top) / (board.cellDim + board.margin));
+	var canvasPosition = getElementPosition(board.container);
+	//var rect = board.container.getBoundingClientRect();
+	var col = Math.floor((click.clientX - canvasPosition[1]) / (board.cellDim + board.margin)),
+	    row = Math.floor((click.clientY - canvasPosition[0]) / (board.cellDim + board.margin));
         board.invertCell(row, col);
 	board.render();
+    }
+
+    
+	/* "getElementPosition" - "processClick" helper function
+	 * Purpose: Determines the top-left coordinate (pixels) of the element that is passed as an argument
+	 * Parameter: element --> HTML element object
+	 * Returns: Array of the form [offset_from_top_of_page, offset_from_left_edge_of_page] */
+	function getElementPosition(element) {
+        var elementTopOffset = 0,
+            elementLeftOffset = 0;
+        while (element) { // Loop up hierarchy of elements until body element is reached
+	    console.log(element.tagName);
+	    if (element.tagName == "BODY") {
+		// Some browsers store the amount of scroll in the body element, and some browser's store
+		// it in the document element.  To deal with this (and as a result of this), in the following 
+		// statement, one of the operands for each || will be 0 and one will be the correct scroll offset.
+                var scrollTopOffset = element.scrollTop || document.documentElement.scrollTop,
+                    scrollLeftOffset = element.scrollLeft || document.documentElement.scrollLeft;
+		
+		// cumulativeOffset += margin_padding_offset - scroll_offset + border_offset 
+		elementTopOffset += (element.offsetTop - scrollTopOffset + element.clientTop);
+		elementLeftOffset += (element.offsetLeft - scrollLeftOffset + element.clientLeft);
+	    }
+	    else {
+		// cumulativeOffset += margin_padding_offset - scroll_offset + border_offset 
+                elementTopOffset += (element.offsetTop - element.scrollTop + element.clientTop);
+		elementLeftOffset += (element.offsetLeft - element.scrollLeft + element.clientLeft);
+	    }
+	    element = element.offsetParent;
+	}
+        return [elementTopOffset, elementLeftOffset];
     }
 }
 
