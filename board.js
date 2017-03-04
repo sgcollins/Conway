@@ -1,4 +1,3 @@
-
 function Board (cellsTall, cellsWide) {
 // Precondition:  Cell constructor function and prototypes have been defined
 // Postcondition: Board object has been created and initialized
