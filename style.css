@@ -1,0 +1,10 @@
+/* Default Styles */
+* {
+    margin: 0px;
+    padding: 0px;
+    background-color: white;
+}
+
+canvas {
+    background-color: rgb(20, 20, 20);
+}
