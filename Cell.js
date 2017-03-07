@@ -15,10 +15,26 @@ Cell.prototype.invert = function () {
 }
 
 
-Cell.prototype.isAlive = function() {
+Cell.prototype.isAlive = function () {
 // Precondition:  Cell's state is either 0 or 1
 // Postcondition: True returned if cell is alive; False returned otherwise
    return (this.state === 1);
+}
+
+
+Cell.prototype.invertNextState = function () {
+// Precondition:  Cell's state is either 0 or 1
+// Postcondition: nextState is set to the opposite of current state
+   if (this.state === 0)
+      this.nextState = 1;
+   else
+      this.nextState = 0;
+}
+
+
+Cell.prototype.retainState = function () {
+// Postcondition: Cell's nextState is set equal to current state
+    this.nextState = this.state;
 }
 
 

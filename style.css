@@ -2,9 +2,32 @@
 * {
     margin: 0px;
     padding: 0px;
-    background-color: white;
+    background-color: black;
 }
 
 canvas {
     background-color: rgb(20, 20, 20);
+}
+
+#conway_controls ul li {
+   list-style-type: none;
+}
+
+#conway_controls ul li a {
+   color: white;
+   text-decoration: none;
+}
+
+#conway_controls ul li a:hover {
+   color: rgb(150, 150, 150);
+}
+
+.control_button {
+   display: block;
+   float: right;
+   font-family: -apple-system, Verdana, sans-serif;
+   font-size: 20px;
+   width: 100px;
+   text-align: center;
+   outline: on;
 }

@@ -7,6 +7,7 @@ function Board (cellsTall, cellsWide) {
    // Create and initialize an array of cells
    this.cellArray = new Array();
    for (var i = 0; i < this.numRows; i++) {
+      this.cellArray.push(new Array());
       for (var j = 0; j < this.numCols; j++) {
          this.cellArray[i].push(new Cell());
       }
@@ -23,7 +24,7 @@ Board.prototype.countLiving = function (indices) {
       var r = indices[i][0], // Row index
           c = indices[i][1]; // Column index
       var valid = (r >= 0 && r < this.numRows) && (c >= 0 && c < this.numCols);
-      if (valid && this.cellArray[row][col].isAlive()) {
+      if (valid && this.cellArray[r][c].isAlive()) {
          numLiving++;
       }
    }
@@ -38,18 +39,38 @@ Board.prototype.generateNextStates = function () {
       for (var j = 0; j < this.numCols; j++) {
          var currentCell = this.cellArray[i][j];
          var neighborIndices = [[i-1, j-1],  [i-1, j],  [i-1, j+1],
-		                        [i  , j-1],  /*[i,j]*/  [i  , j+1],
+		                          [i  , j-1],  /*[i,j]*/  [i  , j+1],
                                 [i+1, j-1],  [i+1, j],  [i+1, j+1]];
          var liveNeighbors = this.countLiving(neighborIndices);
+         console.log(liveNeighbors);
 
          if (currentCell.isAlive()) {
             if (liveNeighbors < 2 || liveNeighbors > 3)  // isolation & crowding
-               currentCell.invert();
+               currentCell.invertNextState();
+            else
+               currentCell.retainState();
          }
-         else if (liveNeighbors === 3) {  // Cell dead with 3 live neighbors
-               currentCell.invert();
+         else {
+            if (liveNeighbors === 3) // Cell dead with 3 live neighbors
+               currentCell.invertNextState();
+            else
+               currentCell.retainState();
          }
       }
+   }
+}
+
+
+Board.prototype.getCells = function () {
+   return this.cellArray;
+}
+
+
+Board.prototype.invertState = function (row, col) {
+// Precondition:  [row] and [col] are integers
+// Postcondition: State of cell at ([row] - 1, [col] -1) is inverted
+   if (row <= this.numRows && row > 0 && col <= this.numCols && col > 0) {
+      this.cellArray[row - 1][col -1].invert();
    }
 }
 
