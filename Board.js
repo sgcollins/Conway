@@ -15,6 +15,45 @@ function Board (cellsTall, cellsWide) {
 }
 
 
+Board.prototype.adjustDimensions = function (newRows, newColumns) {
+// Precondition:  - [newRows] represents number of rows to add (if positive) or
+//                  number of rows to remove (if negative)
+//                - [newColumns] represents number of columns to add (if 
+//                  positive) or number of columns to remove (if negative)
+// Postcondition: Dimensions of board are adjusted
+   console.log("Ran [adjustDimensions] with newRows: " + newRows + " and newColumns: " + newColumns);
+   if (newRows > 0)
+   {
+      var rows = this.numRows;
+      var cols = this.numCols;
+      for (var i = rows; i < rows + newRows; i++)
+      {
+         console.log("Adding a row");
+         this.cellArray.push(new Array());
+         this.numRows++;
+         for (var j = 0; j < cols; j++)
+         {
+            this.cellArray[i].push(new Cell());
+         }
+      }
+   }
+
+   if (newColumns > 0)
+   {
+      var rows = this.numRows;
+      var cols = this.numCols;     
+      for (var j = 0; j < newColumns; j++)
+      {
+         for (var i = 0; i < rows; i++)
+         {
+            this.cellArray[i].push(new Cell());
+         }
+         this.numCols++;
+      }
+   }
+}
+
+
 Board.prototype.countLiving = function (indices) {
 // Precondition:  [indices] is array of pairs of indices, with each pair taking
 //                the form of an array [rowIndex, colIndex]
@@ -42,7 +81,6 @@ Board.prototype.generateNextStates = function () {
 		                          [i  , j-1],  /*[i,j]*/  [i  , j+1],
                                 [i+1, j-1],  [i+1, j],  [i+1, j+1]];
          var liveNeighbors = this.countLiving(neighborIndices);
-         console.log(liveNeighbors);
 
          if (currentCell.isAlive()) {
             if (liveNeighbors < 2 || liveNeighbors > 3)  // isolation & crowding

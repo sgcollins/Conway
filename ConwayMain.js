@@ -1,5 +1,6 @@
-var cellSize = 35; // Default dimension of square cells (pixels)
+var cellSize = 12; // Default dimension of square cells (pixels)
 
+// 
 var canvas = document.getElementById("conway_canvas");
 fitCanvas(canvas);
 
@@ -8,7 +9,7 @@ var numRows = Math.floor(canvas.height / cellSize);
 var numCols = Math.floor(canvas.width / cellSize);
 var renderArea = [1, numRows, 1, numCols];
 var conwayBoard = new Board(renderArea[1] - renderArea[0] + 1, renderArea[3] - renderArea[2] + 1);
-var pad = 1; // Pixels to surround each cell
+var pad = 0.5; // Pixels to surround each cell
 render(conwayBoard, canvas, renderArea, cellSize, pad);
 
 // Add event listeners
@@ -16,9 +17,28 @@ canvas.addEventListener('click', function(e) {processClick(e, conwayBoard)});
 var timeout = 0;
 document.getElementById("run").addEventListener('click', run);
 document.getElementById("pause").addEventListener('click', pause);
+window.addEventListener("resize", function() {fillWindow(canvas, conwayBoard, cellSize)});
 
 
 
+// window.setInterval(function() {fillWindow(canvas, conwayBoard, cellSize)}, 500);
+
+function fillWindow (canvas, board, cellSize)
+// Precondition:  [canvas] is a HTML canvas element
+//                [board] is a Board object
+//                [cellSize] is height/width of the cells
+// Postcondition: Rows/Columns are added/removed to/from ends of board until
+//                window is exactly filled
+{
+   fitCanvas (canvas);
+   var heightGap = canvas.height - (board.getCells().length * cellSize);
+   var widthGap  = canvas.width  - (board.getCells()[0].length * cellSize);
+   var newRows = towardZero(heightGap / cellSize);
+   var newColumns = towardZero(widthGap / cellSize);
+   board.adjustDimensions(newRows, newColumns);
+   renderArea = [1, board.numRows, 1, board.numCols];
+   render(board, canvas, renderArea, cellSize, pad); 
+}
 
 function fitCanvas (canvas) {
 // Precondition:  [canvas] is a HTML canvas element
@@ -29,6 +49,8 @@ function fitCanvas (canvas) {
    canvas.height = window.innerHeight
                    || document.documentElement.clientHeight 
                    || document.body.clientHeight;
+   canvas.height -= getElementPosition(canvas)[0];
+   canvas.width -= getElementPosition(canvas)[1];
 }
 
 
@@ -96,7 +118,17 @@ function render (board, canvas, renderArea, cellSize, pad) {
 
 function run () {
    if (timeout === 0)
-      timeout = window.setInterval(function() {update(conwayBoard, canvas)}, 150);
+      timeout = window.setInterval(function() {update(conwayBoard, canvas)}, 50);
+}
+
+
+function towardZero (number) {
+   if (number >= 0) {
+      return Math.floor(number);
+   }
+   else {
+      return Math.ceil(number);
+   }
 }
 
 
@@ -108,12 +140,11 @@ function pause () {
 
 function update (board, canvas) {
    board.update();
-   fitCanvas(canvas);
-
-   // Experimental code to get the canvas to resize with window
+   //fitCanvas(canvas);
+   /* Experimental code to get the canvas to resize with window
    cellSize = Math.floor(canvas.height / numRows);
    if (cellSize > Math.floor(canvas.width / numCols))
       cellSize = Math.floor(canvas.width / numCols);
-   
+   */ 
    render(board, canvas, renderArea, cellSize, pad);
 }
