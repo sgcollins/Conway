@@ -26,36 +26,29 @@ Board.prototype.adjustDimensions = function (newRows, newColumns) {
 //                - [newColumns] represents number of columns to add (if 
 //                  positive) or number of columns to remove (if negative)
 // Postcondition: Dimensions of board are adjusted
-   if (newRows > 0)
-   {
+   if (newRows > 0) {
       var rows = this.numRows;
       var cols = this.numCols;
-      for (var i = rows; i < rows + newRows; i++)
-      {
-         console.log("Adding a row");
+      for (var i = rows; i < (rows + newRows); i++) {
          this.cellArray.push(new Array());
          this.numRows++;
-         for (var j = 0; j < cols; j++)
-         {
+         for (var j = 0; j < cols; j++) {
             this.cellArray[i].push(new Cell());
          }
       }
       this.rowEnd = this.numRows - 1;
-      this.colEnd = this.numCols - 1;
    }
 
-   if (newColumns > 0)
-   {
+   if (newColumns > 0) {
       var rows = this.numRows;
       var cols = this.numCols;     
-      for (var j = 0; j < newColumns; j++)
-      {
-         for (var i = 0; i < rows; i++)
-         {
+      for (var j = 0; j < newColumns; j++) {
+         for (var i = 0; i < rows; i++) {
             this.cellArray[i].push(new Cell());
          }
          this.numCols++;
       }
+      this.colEnd = this.numCols - 1;
    }
 }
 

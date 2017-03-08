@@ -56,12 +56,12 @@ function fillWindow (canvas, board, cellSize)
 //                window is exactly filled
 {
    fitCanvas (canvas);
-   var heightGap  = canvas.height - (board.getCells().length * cellSize);
-   var widthGap   = canvas.width  - (board.getCells()[0].length * cellSize);
+   var heightGap  = canvas.height - (board.rowEnd - board.rowStart + 1) * cellSize;
+   var widthGap   = canvas.width  - (board.numCols * cellSize);
 
    var newRows    = towardZero(heightGap / cellSize);
-   var newColumns = towardZero(widthGap / cellSize);
-   
+   var newColumns = towardZero(widthGap  / cellSize);
+
    board.adjustDimensions(newRows, newColumns);
    render(board, canvas, cellSize, pad); 
 }
@@ -140,9 +140,9 @@ function render (board, canvas, cellSize, pad) {
    var context = canvas.getContext('2d');
    var cells = board.getCells();
   
-   for (var i = board.rowStart; i < board.rowEnd; i++) {
+   for (var i = board.rowStart; i <= board.rowEnd; i++) {
       var rowPixel = (i * cellSize + 1);
-      for (var j = board.colStart; j < board.colEnd; j++) {
+      for (var j = board.colStart; j <= board.colEnd; j++) {
          if (cells[i][j].isAlive()) 
             context.fillStyle = "rgb(100, 100, 100)";
          else
@@ -161,7 +161,7 @@ function run () {
 
 
 function towardZero (number) {
-   if (number >= 0) {
+   if (number > 0) {
       return Math.floor(number);
    }
    else {
