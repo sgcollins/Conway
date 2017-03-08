@@ -10,11 +10,15 @@ var conwayBoard = new Board(canvas, DEFAULT_CELL_SIZE);
 
 render(conwayBoard, canvas, pad);
 
-// Add event listeners
+// Click event listener
 canvas.addEventListener('click', function(e) {processClick(e, conwayBoard)});
+
+// Run and Pause event listeners
 var timeout = 0;
 document.getElementById("run").addEventListener('click', run);
 document.getElementById("pause").addEventListener('click', pause);
+
+// Resize event listener
 window.addEventListener("resize", function() {resize(canvas, conwayBoard)});
 
 
@@ -45,7 +49,6 @@ function resize (canvas, board)
    // Call the board's [crop] function
    board.crop();
 
-   //board.adjustDimensions(newRows, newColumns);
    render(board, canvas, pad); 
 }
 
