@@ -4,6 +4,11 @@ function Board (cellsTall, cellsWide) {
    this.numCols = cellsWide;
    this.numRows = cellsTall;
 
+   this.rowStart = 0;             // Index of row to start rendering at
+   this.rowEnd   = cellsTall - 1; // Index of row to end rendering at
+   this.colStart = 0;             // Index of column to start rendering at
+   this.colEnd   = cellsWide - 1; // Index of column to end rendering at
+
    // Create and initialize an array of cells
    this.cellArray = new Array();
    for (var i = 0; i < this.numRows; i++) {
@@ -21,7 +26,6 @@ Board.prototype.adjustDimensions = function (newRows, newColumns) {
 //                - [newColumns] represents number of columns to add (if 
 //                  positive) or number of columns to remove (if negative)
 // Postcondition: Dimensions of board are adjusted
-   console.log("Ran [adjustDimensions] with newRows: " + newRows + " and newColumns: " + newColumns);
    if (newRows > 0)
    {
       var rows = this.numRows;
@@ -36,6 +40,8 @@ Board.prototype.adjustDimensions = function (newRows, newColumns) {
             this.cellArray[i].push(new Cell());
          }
       }
+      this.rowEnd = this.numRows - 1;
+      this.colEnd = this.numCols - 1;
    }
 
    if (newColumns > 0)

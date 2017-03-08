@@ -7,10 +7,9 @@ fitCanvas(canvas);
 // Calculate default number of rows and columns
 var numRows = Math.floor(canvas.height / cellSize);
 var numCols = Math.floor(canvas.width / cellSize);
-var renderArea = [1, numRows, 1, numCols];
-var conwayBoard = new Board(renderArea[1] - renderArea[0] + 1, renderArea[3] - renderArea[2] + 1);
+var conwayBoard = new Board(numRows, numCols);
 var pad = 0.5; // Pixels to surround each cell
-render(conwayBoard, canvas, renderArea, cellSize, pad);
+render(conwayBoard, canvas, cellSize, pad);
 
 // Add event listeners
 canvas.addEventListener('click', function(e) {processClick(e, conwayBoard)});
@@ -20,8 +19,34 @@ document.getElementById("pause").addEventListener('click', pause);
 window.addEventListener("resize", function() {fillWindow(canvas, conwayBoard, cellSize)});
 
 
+/*
+function fitWindow (board, cellSize, canvas) {
+// Precondition:  [board] is an object of type Board
+//                [cellSize] is dimension of square cell in pixels
+//                [canvas] is a HTML canvas element
+// Postcondition: [board] will be adjusted so that the window
+//                is completeley filled with cells. If the renderArea shrinks,
+//                any cells that are not in the new renderArea will be removed
+   var windowDimensions = getWindowDimensions();  // [windowHeight, windowWidth]
 
-// window.setInterval(function() {fillWindow(canvas, conwayBoard, cellSize)}, 500);
+   // Calculate the gaps between left edges of renderArea and window and the
+   // bottom edges of renderArea and window (in pixels)
+   var verticalRenderGap   = windowDimensions[0] - (renderArea[1] - renderArea[0] + 1) * cellSize;
+   var horizontalRenderGap = windowDimensions[1] - (renderArea[3] - renderArea[2] + 1) * cellSize;
+   
+   while (verticalRenderGap > cellSize) {
+      // Increase number of rows in the renderArea (first by accessing the cells
+      // at the end of the board's cellArray, then by accessing the cells at the
+      // beginning of the board's cellArray)
+   }
+
+   if (verticalRenderGap > cellSize) {
+      // Add to the end of renderArea until
+   }
+}
+*/
+
+
 
 function fillWindow (canvas, board, cellSize)
 // Precondition:  [canvas] is a HTML canvas element
@@ -31,13 +56,14 @@ function fillWindow (canvas, board, cellSize)
 //                window is exactly filled
 {
    fitCanvas (canvas);
-   var heightGap = canvas.height - (board.getCells().length * cellSize);
-   var widthGap  = canvas.width  - (board.getCells()[0].length * cellSize);
-   var newRows = towardZero(heightGap / cellSize);
+   var heightGap  = canvas.height - (board.getCells().length * cellSize);
+   var widthGap   = canvas.width  - (board.getCells()[0].length * cellSize);
+
+   var newRows    = towardZero(heightGap / cellSize);
    var newColumns = towardZero(widthGap / cellSize);
+   
    board.adjustDimensions(newRows, newColumns);
-   renderArea = [1, board.numRows, 1, board.numCols];
-   render(board, canvas, renderArea, cellSize, pad); 
+   render(board, canvas, cellSize, pad); 
 }
 
 function fitCanvas (canvas) {
@@ -78,7 +104,19 @@ function getElementPosition (e) {
       e = e.offsetParent;
    }
    return [totalTopOffset, totalLeftOffset];
-}   
+}
+
+
+function getWindowDimensions () {
+// Returns: 1x2 Array of pixel dimensions [windowHeight, windowWidth]
+   var windowHeight = window.innerHeight ||
+                      document.documentElement.clientHeight ||
+                      document.body.clientHeight;
+   var windowWidth  = window.innerWidth ||
+                      document.documentElement.clientWidth ||
+                      document.body.clientWidth;
+   return [windowHeight, windowWidth];
+}
 
 
 function processClick (click, board) {
@@ -89,22 +127,22 @@ function processClick (click, board) {
    var row = Math.ceil((click.clientY - canvasCoords[0]) / cellSize);
    var col = Math.ceil((click.clientX - canvasCoords[1]) / cellSize);
    board.invertState(row, col);
-   render(board, canvas, renderArea, cellSize, pad);
+   render(board, canvas, cellSize, pad);
 }
 
 
-function render (board, canvas, renderArea, cellSize, pad) {
+function render (board, canvas, cellSize, pad) {
 // Precondition:  [board] is a Board object
 //                [canvas] is a HTML5 canvas element
-//                [renderArea] is 1x4 array [rowStart, rowEnd, colStart, colEnd]
+//                [cellSize] is current dimension of each square cell
 //                [pad] is number of pixels surrounding each cell
 // Postcondition: Current state of [board] is rendered on the canvas element
    var context = canvas.getContext('2d');
    var cells = board.getCells();
   
-   for (var i = renderArea[0] - 1; i < renderArea[1]; i++) {
+   for (var i = board.rowStart; i < board.rowEnd; i++) {
       var rowPixel = (i * cellSize + 1);
-      for (var j = renderArea[2] - 1; j < renderArea[3]; j++) {
+      for (var j = board.colStart; j < board.colEnd; j++) {
          if (cells[i][j].isAlive()) 
             context.fillStyle = "rgb(100, 100, 100)";
          else
@@ -146,5 +184,5 @@ function update (board, canvas) {
    if (cellSize > Math.floor(canvas.width / numCols))
       cellSize = Math.floor(canvas.width / numCols);
    */ 
-   render(board, canvas, renderArea, cellSize, pad);
+   render(board, canvas, cellSize, pad);
 }
