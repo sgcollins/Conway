@@ -1,13 +1,15 @@
-function Board (cellsTall, cellsWide) {
+function Board (canvas, cellSize) {
 // Precondition:  Cell constructor function and prototypes have been defined
 // Postcondition: Board object has been created and initialized
-   this.numCols = cellsWide;
-   this.numRows = cellsTall;
+   this.cellSize = cellSize;
 
-   this.rowStart = 0;             // Index of row to start rendering at
-   this.rowEnd   = cellsTall - 1; // Index of row to end rendering at
-   this.colStart = 0;             // Index of column to start rendering at
-   this.colEnd   = cellsWide - 1; // Index of column to end rendering at
+   this.numRows = Math.floor(canvas.height / this.cellSize);
+   this.numCols = Math.floor(canvas.width  / this.cellSize);
+
+   this.rowStart = 0;                // Index of row to start rendering at
+   this.rowEnd   = this.numRows - 1; // Index of row to end rendering at
+   this.colStart = 0;                // Index of column to start rendering at
+   this.colEnd   = this.numCols - 1; // Index of column to end rendering at
 
    // Create and initialize an array of cells
    this.cellArray = new Array();
@@ -20,6 +22,28 @@ function Board (cellsTall, cellsWide) {
 }
 
 
+Board.prototype.addCols = function (newCols) {
+   for (var i = 0; i < this.numRows; i++) {
+      for (var j = 0; j < newCols; j++) {
+         this.cellArray[i].push(new Cell());
+      }
+   }
+   this.numCols += newCols;
+}
+
+
+Board.prototype.addRows = function (newRows) {
+   for (var i = 0; i < newRows; i++) {
+      this.cellArray.push(new Array());
+      this.numRows++;
+      for (var j = 0; j < this.numCols; j++) {
+         this.cellArray[this.numRows - 1].push(new Cell());
+      }
+   }
+}
+
+
+/*
 Board.prototype.adjustDimensions = function (newRows, newColumns) {
 // Precondition:  - [newRows] represents number of rows to add (if positive) or
 //                  number of rows to remove (if negative)
@@ -51,7 +75,7 @@ Board.prototype.adjustDimensions = function (newRows, newColumns) {
       this.colEnd = this.numCols - 1;
    }
 }
-
+*/
 
 Board.prototype.countLiving = function (indices) {
 // Precondition:  [indices] is array of pairs of indices, with each pair taking
@@ -67,6 +91,29 @@ Board.prototype.countLiving = function (indices) {
       }
    }
    return numLiving;
+}
+
+
+Board.prototype.crop = function () {
+   var cropped = new Array();
+   for (var i = 0; i <= (this.rowEnd - this.rowStart); i++) {
+      cropped.push(new Array());
+      for (var j = 0; j <= (this.colEnd - this.colStart); j++) {
+         cropped[i].push(this.cellArray[this.rowStart + i][this.colStart + j]);
+      }
+   }
+
+   // Update the indices that are to be rendered
+   this.rowStart  = 0;
+   this.rowEnd    = cropped.length - 1;
+   this.colStart  = 0;
+   this.colEnd    = cropped[0].length - 1;
+
+   // Update the dimension properties
+   this.numRows = cropped.length;
+   this.numCols = cropped[0].length;
+
+   this.cellArray = cropped;
 }
 
 
@@ -100,6 +147,16 @@ Board.prototype.generateNextStates = function () {
 
 Board.prototype.getCells = function () {
    return this.cellArray;
+}
+
+
+Board.prototype.getPixelHeight = function () {
+   return ((this.rowEnd - this.rowStart + 1) * this.cellSize);
+}
+
+
+Board.prototype.getPixelWidth = function () {
+   return ((this.colEnd - this.colStart + 1) * this.cellSize);
 }
 
 
